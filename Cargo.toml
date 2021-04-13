@@ -1,0 +1,12 @@
+[package]
+name = "styleth"
+version = "0.1.0"
+authors = ["azor <azorvk@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.8.3"
+libsecp256k1 = "0.3.5"
+hex = "0.4.3"
+sha3 = "0.9.1"
+
