@@ -5,10 +5,9 @@ use eth::KeyPair;
 use cli::Cli;
 
 fn main() {
-    println!("Working...");
-
     let cli_args = Cli::new();
 
+    println!("Working...");
     loop {
         let pair = KeyPair::generate();
         if &pair.address[..cli_args.starts_with.len()] == cli_args.starts_with {
