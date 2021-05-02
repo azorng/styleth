@@ -65,7 +65,6 @@ impl Cli {
         if self.match_value.is_some() {
             let val = self.match_value.as_ref().unwrap();
             let pattern = validate_and_format_pattern(val);
-
             return (Mode::Match, pattern);
         }
 

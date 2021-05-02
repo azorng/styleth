@@ -34,7 +34,6 @@ fn main() {
                 }
                 score.inc();
             }
-
         })
 }
 
