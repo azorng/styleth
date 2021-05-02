@@ -19,23 +19,35 @@ impl ProgressBar {
     pub fn tick(&self) {
         self.bar.inc(1);
     }
+
+    pub fn get_attempts(&self) -> u64 {
+        self.bar.position()
+    }
 }
 
 pub enum Mode {
     StartsWith,
-    Match
+    Match,
+    Leading
 }
 
 #[derive(StructOpt)]
-#[structopt(rename_all = "kebab-case")]
+#[structopt(verbatim_doc_comment, rename_all = "kebab-case")]
 pub struct Cli {
-    /// Matches on addresses that starts with given chars. Example: dead69
-    #[structopt(long)]
+    /// Matches on addresses that starts with given chars. 
+    /// Example: ./styleth --starts-with dead69
+    #[structopt(verbatim_doc_comment, name = "hex text", short="s", long="starts-with")]
     pub starts_with: Option<String>,
 
-    /// Matches on a given pattern where X equals any char. Example: deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
-    #[structopt(long="match")]
+    /// Matches on a given pattern where X equals any char.
+    /// Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
+    #[structopt(verbatim_doc_comment, name="pattern", short="m", long="match")]
     pub match_value: Option<String>,
+
+    /// Takes a single char as input and performs an incremental matching. 
+    /// Example: ./styleth --leading 0
+    #[structopt(verbatim_doc_comment, name = "hex char", short="l", long="leading")]
+    pub leading: Option<char>,
 }
 
 impl Cli {
@@ -53,8 +65,13 @@ impl Cli {
         if self.match_value.is_some() {
             let val = self.match_value.as_ref().unwrap();
             let pattern = validate_and_format_pattern(val);
+            return (Mode::Match, pattern);
+        }
 
-            (Mode::Match, pattern)
+        if self.leading.is_some() {
+            let val = self.leading.as_ref().unwrap().to_string();
+            validate_hex(&val);
+            return (Mode::Leading, String::from(val));
         }
 
         else { 
