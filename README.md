@@ -12,7 +12,7 @@ Compile it yourself:
 ## CLI
 
 ```
-styleth 0.1.1
+styleth 0.1.2
 
 USAGE:
     styleth [OPTIONS]
@@ -22,9 +22,12 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --match <match-value>          Matches on a given pattern where X equals any char. Example:
-                                       deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
-        --starts-with <starts-with>    Matches on addresses that starts with given chars. Example: dead69
+    -l, --leading <hex char>        Takes a single char as input and performs an incremental matching.
+                                    Example: ./styleth --leading 0
+    -s, --starts-with <hex text>    Matches on addresses that starts with given chars.
+                                    Example: ./styleth --starts-with dead69
+    -m, --match <pattern>           Matches on a given pattern where X equals any char.
+                                    Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
 ```
 
 ## Development
