@@ -1,21 +1,20 @@
+use crate::cli::Mode;
+use atomic_counter::{AtomicCounter, RelaxedCounter};
 
 pub struct Matcher {
-    mode: Mode,
-    input: &String
+    mode: Mode
 }
 
 impl Matcher {
-    fn new(mode: Mode, input: &String) -> Self {
-        Matcher {
-            mode, input
-        }
+    pub fn new(mode: Mode) -> Self {
+        Matcher { mode }
     }
 
-    fn is_match(&self, address: &String) -> bool {
-        match self.mode {
-            Mode::StartsWith => address[..self.input.len()] == self.input,
-            Mode::Match => is_pattern_match(address, self.input),
-            Mode::Leading => is_leading_match(address, self.input, score.get())
+    pub fn is_match(&self, address: &String) -> bool {
+        match &self.mode {
+            Mode::StartsWith(input) => &address[..input.len()] == input,
+            Mode::Match(pattern) => is_pattern_match(address, &pattern),
+            Mode::Leading(input, score) => is_leading_match(address, &input, &score)
         }
     }
 }
@@ -28,7 +27,14 @@ fn is_pattern_match(address: &String, pattern: &String) -> bool {
     })
 }
 
-fn is_leading_match(address: &String, input_value: &String, score: usize) -> bool {
-    address[..score] == (0..score).map(|_| input_value.as_str()).collect::<String>()
+fn is_leading_match(address: &String, input_value: &String, score: &RelaxedCounter) -> bool {
+    let score_val = score.get();
+    let incremental_leading = (0..score_val).map(|_| input_value.as_str()).collect::<String>();
+    let is_match = address[..score_val] == incremental_leading;
+    if is_match {
+        println!("Score: {}", score_val);
+        score.inc();
+    }
+    is_match
 }
 
