@@ -12,22 +12,26 @@ Compile it yourself:
 ## CLI
 
 ```
-styleth 0.1.2
+styleth 0.1.3
 
 USAGE:
-    styleth [OPTIONS]
+    styleth [FLAGS] [OPTIONS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help            Prints help information
+    -n, --numbers-only    Matches on random numbers.
+                          Example: ./styleth --random-numbers
+    -V, --version         Prints version information
 
 OPTIONS:
-    -l, --leading <hex char>        Takes a single char as input and performs an incremental matching.
-                                    Example: ./styleth --leading 0
-    -s, --starts-with <hex text>    Matches on addresses that starts with given chars.
-                                    Example: ./styleth --starts-with dead69
-    -m, --match <pattern>           Matches on a given pattern where X equals any char.
-                                    Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
+    -l, --leading <hex char>                 Takes a single char as input and performs an incremental matching.
+                                             Example: ./styleth --leading 0
+    -s, --starts-with <hex text>             Matches on addresses that starts with given chars.
+                                             Example: ./styleth --starts-with dead69
+    -m, --match <pattern>                    Matches on a given pattern where X equals any char.
+                                             Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
+    -c, --specific-chars <specific-chars>    Matches on specific hex chars without any particular order.
+                                             Example: ./styleth --specific-chars abc123
 ```
 
 ## Development

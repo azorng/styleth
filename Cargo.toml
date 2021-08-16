@@ -1,7 +1,7 @@
 [package]
 name = "styleth"
-version = "0.1.2"
-authors = ["azor <azorvk@gmail.com>"]
+version = "0.1.3"
+authors = ["azorng"]
 edition = "2018"
 
 [dependencies]

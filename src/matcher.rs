@@ -14,7 +14,9 @@ impl Matcher {
         match &self.mode {
             Mode::StartsWith(input) => &address[..input.len()] == input,
             Mode::Match(pattern) => is_pattern_match(address, &pattern),
-            Mode::Leading(input, score) => is_leading_match(address, &input, &score)
+            Mode::Leading(input, score) => incremental_char_match(address, &score, |val| val == *input),
+            Mode::NumbersOnly(score) => incremental_char_match(address, &score, |val| val.is_numeric()),
+            Mode::SpecificChars(input, score) => incremental_char_match(address, &score, |val| input.chars().any(|c| c == val))
         }
     }
 }
@@ -27,14 +29,24 @@ fn is_pattern_match(address: &String, pattern: &String) -> bool {
     })
 }
 
-fn is_leading_match(address: &String, input_value: &String, score: &RelaxedCounter) -> bool {
-    let score_val = score.get();
-    let incremental_leading = (0..score_val).map(|_| input_value.as_str()).collect::<String>();
-    let is_match = address[..score_val] == incremental_leading;
+fn incremental_char_match<F>(address: &String, score: &RelaxedCounter, f: F) -> bool 
+where F: Fn(char) -> bool {
+    let mut is_match = false;
+    for (i, char_val) in address.chars().enumerate() {
+        if f(char_val) {
+            if i >= score.get() {
+                score.inc();
+                is_match = true;
+            }
+            if i + 1 == address.len() {
+                is_match = true;
+            }
+        } else {
+            break;
+        }
+    }
     if is_match {
-        println!("Score: {}", score_val);
-        score.inc();
+        println!("Score: {}", score.get());
     }
     is_match
 }
-

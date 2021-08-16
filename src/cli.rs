@@ -25,7 +25,9 @@ impl ProgressBar {
 pub enum Mode {
     StartsWith(String),
     Match(String),
-    Leading(String, RelaxedCounter)
+    Leading(char, RelaxedCounter),
+    NumbersOnly(RelaxedCounter),
+    SpecificChars(String, RelaxedCounter)
 }
 
 #[derive(StructOpt)]
@@ -45,6 +47,16 @@ pub struct Cli {
     /// Example: ./styleth --leading 0
     #[structopt(verbatim_doc_comment, name = "hex char", short="l", long="leading")]
     pub leading: Option<char>,
+
+    /// Matches on random numbers.
+    /// Example: ./styleth --random-numbers
+    #[structopt(verbatim_doc_comment, short="n", long="numbers-only")]
+    pub numbers_only: bool,
+
+    /// Matches on specific hex chars without any particular order.
+    /// Example: ./styleth --specific-chars abc123
+    #[structopt(verbatim_doc_comment, short="c", long="specific-chars")]
+    pub specific_chars: Option<String>,
 }
 
 impl Cli {
@@ -68,7 +80,17 @@ impl Cli {
         if self.leading.is_some() {
             let val = self.leading.as_ref().unwrap().to_string();
             validate_hex(&val);
-            return Mode::Leading(String::from(val), RelaxedCounter::new(1));
+            return Mode::Leading(self.leading.unwrap(), RelaxedCounter::new(0));
+        }
+
+        if self.numbers_only {
+            return Mode::NumbersOnly(RelaxedCounter::new(0));
+        }
+
+        if self.specific_chars.is_some() {
+            let val = self.specific_chars.as_ref().unwrap().to_string();
+            validate_hex(&val);
+            return Mode::SpecificChars(String::from(val), RelaxedCounter::new(0));
         }
 
         else { 
