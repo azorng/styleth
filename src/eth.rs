@@ -31,3 +31,19 @@ impl KeyPair {
         format!("0x{}", self.address)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generate_check_valid_address() {
+        let key_pair = KeyPair::generate();
+        let is_every_char_hex = key_pair.address.chars().all(|c| 
+            "0123456789abcdef".chars().any(|hex_char|  hex_char == c)
+        );
+
+        assert_eq!(40, key_pair.address.len());
+        assert!(is_every_char_hex);
+    }
+}
