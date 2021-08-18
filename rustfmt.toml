@@ -1,0 +1,10 @@
+max_width = 120
+reorder_imports = true
+newline_style = "Unix"
+chain_width = 80
+spaces_around_ranges = false
+reorder_impl_items = false
+match_arm_leading_pipes = "Preserve"
+match_arm_blocks = false
+match_block_trailing_comma = true
+trailing_semicolon = false

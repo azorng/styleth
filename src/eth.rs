@@ -1,10 +1,10 @@
-use secp256k1::{ PublicKey, SecretKey };
-use sha3::{ Digest, Keccak256 };
 use rand::Rng;
+use secp256k1::{PublicKey, SecretKey};
+use sha3::{Digest, Keccak256};
 
 pub struct KeyPair {
     private_key: SecretKey,
-    pub address: String
+    pub address: String,
 }
 
 impl KeyPair {
@@ -19,7 +19,7 @@ impl KeyPair {
 
         KeyPair {
             private_key,
-            address: hex::encode(address)
+            address: hex::encode(address),
         }
     }
 
@@ -39,9 +39,10 @@ mod tests {
     #[test]
     fn generate_check_valid_address() {
         let key_pair = KeyPair::generate();
-        let is_every_char_hex = key_pair.address.chars().all(|c| 
-            "0123456789abcdef".chars().any(|hex_char|  hex_char == c)
-        );
+        let is_every_char_hex = key_pair
+            .address
+            .chars()
+            .all(|c| "0123456789abcdef".chars().any(|hex_char| hex_char == c));
 
         assert_eq!(40, key_pair.address.len());
         assert!(is_every_char_hex);

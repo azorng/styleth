@@ -1,16 +1,17 @@
-use structopt::StructOpt;
 use indicatif::{ProgressBar as IndicatifBar, ProgressStyle};
-use std::process;
 use regex::Regex;
+use std::process;
+use structopt::StructOpt;
 
 pub struct ProgressBar {
-    bar: IndicatifBar
+    bar: IndicatifBar,
 }
 
 impl ProgressBar {
     pub fn new() -> ProgressBar {
         let progress_bar = IndicatifBar::new_spinner();
-        progress_bar.set_style(ProgressStyle::default_bar().template("[{elapsed_precise}] {pos} attempts"));
+        progress_bar
+            .set_style(ProgressStyle::default_bar().template("[{elapsed_precise}] {pos} attempts"));
         progress_bar.set_draw_delta(100);
 
         ProgressBar { bar: progress_bar }
@@ -26,35 +27,40 @@ pub enum Mode {
     Match(String),
     Leading(char),
     NumbersOnly,
-    SpecificChars(String)
+    SpecificChars(String),
 }
 
 #[derive(StructOpt)]
 #[structopt(verbatim_doc_comment, rename_all = "kebab-case")]
 pub struct Cli {
-    /// Matches on addresses that starts with given chars. 
+    /// Matches on addresses that starts with given chars.
     /// Example: ./styleth --starts-with dead69
-    #[structopt(verbatim_doc_comment, name = "hex text", short="s", long="starts-with")]
+    #[structopt(
+        verbatim_doc_comment,
+        name = "hex text",
+        short = "s",
+        long = "starts-with"
+    )]
     pub starts_with: Option<String>,
 
     /// Matches on a given pattern where X equals any char.
     /// Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
-    #[structopt(verbatim_doc_comment, name="pattern", short="m", long="match")]
+    #[structopt(verbatim_doc_comment, name = "pattern", short = "m", long = "match")]
     pub match_value: Option<String>,
 
-    /// Takes a single char as input and performs an incremental matching. 
+    /// Takes a single char as input and performs an incremental matching.
     /// Example: ./styleth --leading 0
-    #[structopt(verbatim_doc_comment, name = "hex char", short="l", long="leading")]
+    #[structopt(verbatim_doc_comment, name = "hex char", short = "l", long = "leading")]
     pub leading: Option<char>,
 
     /// Matches on random numbers.
     /// Example: ./styleth --random-numbers
-    #[structopt(verbatim_doc_comment, short="n", long="numbers-only")]
+    #[structopt(verbatim_doc_comment, short = "n", long = "numbers-only")]
     pub numbers_only: bool,
 
     /// Matches on specific hex chars without any particular order.
     /// Example: ./styleth --specific-chars abc123
-    #[structopt(verbatim_doc_comment, short="c", long="specific-chars")]
+    #[structopt(verbatim_doc_comment, short = "c", long = "specific-chars")]
     pub specific_chars: Option<String>,
 }
 
@@ -90,14 +96,11 @@ impl Cli {
             let val = self.specific_chars.as_ref().unwrap().to_string();
             validate_hex(&val);
             return Mode::SpecificChars(String::from(val));
-        }
-
-        else { 
+        } else {
             exit_with_err("Select a valid option. For more information try --help.".to_string());
             panic!();
         }
     }
-
 }
 
 fn exit_with_err(msg: String) {
@@ -121,6 +124,9 @@ fn validate_and_format_pattern(pattern: &String) {
 
     let re = Regex::new(r"^[a-fA-F0-9X]*$").unwrap();
     if !re.is_match(pattern) {
-        exit_with_err(format!("Invalid pattern syntax: {}. For more information try --help.", pattern));
+        exit_with_err(format!(
+            "Invalid pattern syntax: {}. For more information try --help.",
+            pattern
+        ));
     }
 }
