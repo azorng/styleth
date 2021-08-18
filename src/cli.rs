@@ -1,4 +1,3 @@
-use atomic_counter::RelaxedCounter;
 use structopt::StructOpt;
 use indicatif::{ProgressBar as IndicatifBar, ProgressStyle};
 use std::process;
@@ -25,9 +24,9 @@ impl ProgressBar {
 pub enum Mode {
     StartsWith(String),
     Match(String),
-    Leading(char, RelaxedCounter),
-    NumbersOnly(RelaxedCounter),
-    SpecificChars(String, RelaxedCounter)
+    Leading(char),
+    NumbersOnly,
+    SpecificChars(String)
 }
 
 #[derive(StructOpt)]
@@ -80,17 +79,17 @@ impl Cli {
         if self.leading.is_some() {
             let val = self.leading.as_ref().unwrap().to_string();
             validate_hex(&val);
-            return Mode::Leading(self.leading.unwrap(), RelaxedCounter::new(0));
+            return Mode::Leading(self.leading.unwrap());
         }
 
         if self.numbers_only {
-            return Mode::NumbersOnly(RelaxedCounter::new(0));
+            return Mode::NumbersOnly;
         }
 
         if self.specific_chars.is_some() {
             let val = self.specific_chars.as_ref().unwrap().to_string();
             validate_hex(&val);
-            return Mode::SpecificChars(String::from(val), RelaxedCounter::new(0));
+            return Mode::SpecificChars(String::from(val));
         }
 
         else { 

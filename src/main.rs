@@ -6,6 +6,7 @@ use eth::KeyPair;
 use cli::{Cli, ProgressBar};
 use rayon::iter::ParallelIterator;
 use matcher::Matcher;
+use atomic_counter::AtomicCounter;
 
 fn main() {
     let cli_args = Cli::new();
@@ -19,6 +20,10 @@ fn main() {
             progress_bar.tick();
 
             if matcher.is_match(&pair.address) {
+                if matcher.score.get() != 0 {
+                    println!("Score: {}", matcher.score.get());
+                }
+
                 println!("Private key: {}", pair.get_private_key_as_hex());
                 println!("Address: {}", pair.get_address_with_prefix());
                 println!("\n");
