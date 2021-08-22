@@ -3,7 +3,9 @@
 An Ethereum vanity address generator.
 
 ## Installation
+
 Compile it yourself:
+
 1. Install [Rust via Rustup.rs](http://rustup.rs/)
 2. Clone this repository: `git clone https://github.com/azorng/styleth.git`
 3. Move to the project directory: `cd styleth`
@@ -12,7 +14,7 @@ Compile it yourself:
 ## CLI
 
 ```
-styleth 0.1.3
+styleth 0.1.4
 
 USAGE:
     styleth [FLAGS] [OPTIONS]
@@ -28,8 +30,8 @@ OPTIONS:
                                              Example: ./styleth --leading 0
     -s, --starts-with <hex text>             Matches on addresses that starts with given chars.
                                              Example: ./styleth --starts-with dead69
-    -m, --match <pattern>                    Matches on a given pattern where X equals any char.
-                                             Example: ./styleth --match deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69
+    -r, --regex <regex>                      Matches on a given regex pattern.
+                                             Example: ./styleth --regex "^dead.*0dead$"
     -c, --specific-chars <specific-chars>    Matches on specific hex chars without any particular order.
                                              Example: ./styleth --specific-chars abc123
 ```

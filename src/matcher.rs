@@ -1,5 +1,6 @@
 use crate::cli::Mode;
 use atomic_counter::{AtomicCounter, RelaxedCounter};
+use regex::Regex;
 
 pub struct Matcher {
     mode: Mode,
@@ -17,21 +18,13 @@ impl Matcher {
     pub fn is_match(&self, address: &String) -> bool {
         match &self.mode {
             Mode::StartsWith(input) => &address[..input.len()] == input,
-            Mode::Match(pattern) => self.is_pattern_match(address, &pattern),
             Mode::Leading(input) => self.incremental_char_match(address, |c| c == *input),
             Mode::NumbersOnly => self.incremental_char_match(address, |c| c.is_numeric()),
             Mode::SpecificChars(input) => {
                 self.incremental_char_match(address, |c| input.chars().any(|input_c| input_c == c))
             }
+            Mode::Regex(regex) => Regex::new(regex).unwrap().is_match(&address),
         }
-    }
-
-    fn is_pattern_match(&self, address: &String, pattern: &String) -> bool {
-        let mut pattern_chars = pattern.chars();
-        !address.chars().any(|c| {
-            let pattern_char = pattern_chars.next().unwrap();
-            pattern_char != c && pattern_char != 'X'
-        })
     }
 
     fn incremental_char_match<F>(&self, address: &String, f: F) -> bool
@@ -76,22 +69,6 @@ mod tests {
         let matcher = Matcher::new(mode);
         assert_eq!(false, matcher.is_match(&addr));
         assert_eq!(0, matcher.score.get());
-    }
-
-    #[test]
-    fn match_matches() {
-        let mode = Mode::Match("deadXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69".to_string());
-        let addr = "deadaae3aa608bcc91bf997a0ae1e45ac6a23369".to_string();
-        let matcher = Matcher::new(mode);
-        assert_eq!(true, matcher.is_match(&addr));
-    }
-
-    #[test]
-    fn match_nomatch() {
-        let mode = Mode::Match("de8dXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX69".to_string());
-        let addr = "deadaae3aa608bcc91bf997a0ae1e45ac6a23369".to_string();
-        let matcher = Matcher::new(mode);
-        assert_eq!(false, matcher.is_match(&addr));
     }
 
     #[test]
@@ -144,5 +121,21 @@ mod tests {
         let matcher = Matcher::new(mode);
         assert_eq!(false, matcher.is_match(&addr));
         assert_eq!(0, matcher.score.get());
+    }
+
+    #[test]
+    fn regex_match() {
+        let mode = Mode::Regex("^dead.*0dead$".to_string());
+        let addr = "deadedda6a5e70213a62f922958cbd307dd0dead".to_string();
+        let matcher = Matcher::new(mode);
+        assert_eq!(true, matcher.is_match(&addr));
+    }
+
+    #[test]
+    fn regex_nomatch() {
+        let mode = Mode::Regex("^dead.*0dead$".to_string());
+        let addr = "deadedda6a5e70213a62f922958cbd307dddead0".to_string();
+        let matcher = Matcher::new(mode);
+        assert_eq!(false, matcher.is_match(&addr));
     }
 }
