@@ -1,5 +1,5 @@
 use rand::Rng;
-use secp256k1::{PublicKey, SecretKey};
+use libsecp256k1::{PublicKey, SecretKey};
 use sha3::{Digest, Keccak256};
 
 pub struct KeyPair {
