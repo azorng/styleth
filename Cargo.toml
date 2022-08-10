@@ -1,8 +1,12 @@
 [package]
 name = "styleth"
+description = "Ethereum vanity address generator"
 version = "0.1.4"
 authors = ["azorng"]
 edition = "2018"
+repository = "https://github.com/azorng/styleth"
+keywords = ["ethereum", "vanity", "address", "cryptocurrency", "eth"]
+license = "MIT"
 
 [dependencies]
 rand = "0.8.3"

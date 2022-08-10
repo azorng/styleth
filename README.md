@@ -4,7 +4,15 @@ An Ethereum vanity address generator.
 
 ## Installation
 
-Compile it yourself:
+### Cargo:
+
+First, install [Rust](https://www.rust-lang.org/tools/install) (using the recommended `rustup` installation method) and then
+
+```bash
+cargo install styleth
+```
+
+### Compile it yourself:
 
 1. Install [Rust via Rustup.rs](http://rustup.rs/)
 2. Clone this repository: `git clone https://github.com/azorng/styleth.git`
